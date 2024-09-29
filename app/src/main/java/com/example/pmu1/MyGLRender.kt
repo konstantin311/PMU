@@ -48,7 +48,7 @@ class MyGLRenderer(private val context: Context) : GLSurfaceView.Renderer {
         //Matrix.scaleM(cubeMatrix, 0, 0.5f, 0.5f, 0.5f)
         Matrix.scaleM(cubeMatrix, 0, 0.25f, 0.25f, 0.25f)
 
-        Matrix.rotateM(cubeMatrix, 0, angle, 1f, 0f, 0f)
+        //Matrix.rotateM(cubeMatrix, 0, angle, 1f, 0f, 0f)
         Matrix.rotateM(cubeMatrix, 0, angle, 0f, 1f, 0f)
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
         Matrix.multiplyMM(mvpMatrix, 0, mvpMatrix, 0, cubeMatrix, 0)
