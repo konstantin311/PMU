@@ -1,20 +1,33 @@
 package com.example.pmu1
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.background
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.clickable
+import androidx.navigation.NavHostController
 
 @Composable
-fun NewsScreen(viewModel: NewsViewModel = viewModel()) {
+fun NewsScreen(navController: NavHostController, viewModel: NewsViewModel = viewModel()) {
     val newsState by remember { viewModel.currentNews }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { _, dragAmount ->
+                    if (dragAmount < 0) { // Swipe left to go to OpenGLScreen
+                        navController.navigate("opengl") // Переход на экран OpenGL
+                    }
+                }
+            }
+    ) {
         val columns = 1
         val rows = 4
         for (row in 0 until rows) {
