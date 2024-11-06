@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.content.Context
 import android.opengl.GLSurfaceView
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -51,6 +54,7 @@ fun MainNavHost() {
     NavHost(navController = navController, startDestination = "news") {
         composable("news") { NewsScreen(navController) }
         composable("opengl") { OpenGLScreen(navController) }
+        composable("moon_info") { MoonInfoScreen(navController) }
     }
 }
 
@@ -93,7 +97,9 @@ fun OpenGLScreen(navController: NavController, planetViewModel: PlanetViewModel 
             }
             Button(
                 onClick = {
-                    //TO DO
+                    if(planetViewModel.currentPlanetIndex == 9){
+                        navController.navigate("moon_info")
+                    }
                 },
                 modifier = Modifier.size(80.dp, 40.dp)
             ) {
@@ -103,4 +109,44 @@ fun OpenGLScreen(navController: NavController, planetViewModel: PlanetViewModel 
     }
 }
 
+@Composable
+fun MoonInfoScreen(navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { change, dragAmount ->
+                    if (dragAmount > 50) {
+                        navController.popBackStack("news", inclusive = false)
+                    }
+                }
+            },
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            "Луна",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            "Луна — единственный естественный спутник Земли.",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        AndroidView(
+            factory = { context ->
+                GLSurfaceView(context).apply {
+                    setEGLContextClientVersion(2)
+                    setRenderer(SpherePhongRenderer(context))
+                }
+            },
+            modifier = Modifier
+                .size(300.dp)
+                .padding(16.dp)
+        )
+    }
+}
 
